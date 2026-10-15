@@ -1,0 +1,111 @@
+﻿@model RegisterView
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-7 col-lg-5">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4 p-md-5">
+
+                    <h1 class="h3 fw-bold mb-4">Create Account</h1>
+
+                    <form asp-action="Register"
+                          asp-controller="Account"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger small mb-3"></div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6">
+                                <label asp-for="FirstName"
+                                       class="form-label small fw-bold">
+                                    First Name
+                                </label>
+                                <input asp-for="FirstName"
+                                       class="form-control py-2"
+                                       placeholder="First name"
+                                       autocomplete="given-name" />
+                                <span asp-validation-for="FirstName"
+                                      class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label asp-for="LastName"
+                                       class="form-label small fw-bold">
+                                    Last Name
+                                </label>
+                                <input asp-for="LastName"
+                                       class="form-control py-2"
+                                       placeholder="Last name"
+                                       autocomplete="family-name" />
+                                <span asp-validation-for="LastName"
+                                      class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DateOfBirth"
+                                   class="form-label small fw-bold">
+                                Date of Birth
+                            </label>
+                            <input asp-for="DateOfBirth"
+                                   type="date"
+                                   class="form-control py-2"
+                                   autocomplete="bday" />
+                            <span asp-validation-for="DateOfBirth"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="email"
+                                   class="form-label small fw-bold">
+                                Email
+                            </label>
+                            <input asp-for="email"
+                                   type="email"
+                                   class="form-control py-2"
+                                   placeholder="name@example.com"
+                                   autocomplete="email" />
+                            <span asp-validation-for="email"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="password"
+                                   class="form-label small fw-bold">
+                                Password
+                            </label>
+                            <input asp-for="password"
+                                   type="password"
+                                   class="form-control py-2"
+                                   placeholder="Enter your password"
+                                   autocomplete="new-password" />
+                            <span asp-validation-for="password"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="passwordConfirmation"
+                                   class="form-label small fw-bold">
+                                Confirm Password
+                            </label>
+                            <input asp-for="passwordConfirmation"
+                                   type="password"
+                                   class="form-control py-2"
+                                   placeholder="Re-enter your password"
+                                   autocomplete="new-password" />
+                            <span asp-validation-for="passwordConfirmation"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-dark w-100 rounded-pill py-2">
+                            Create Account
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
