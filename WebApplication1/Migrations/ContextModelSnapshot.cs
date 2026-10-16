@@ -270,6 +270,10 @@ namespace WebApplication1.Migrations
                     b.Property<bool>("Is_Active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("hireDate")
                         .HasColumnType("datetime2");
 
@@ -280,6 +284,9 @@ namespace WebApplication1.Migrations
                     b.HasKey("Employee_Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -341,7 +348,21 @@ namespace WebApplication1.Migrations
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
+                    b.HasOne("WebApplication1.Data.AppIdentityUser", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("WebApplication1.Models.Employee", "UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
                     b.Navigation("department");
+                });
+
+            modelBuilder.Entity("WebApplication1.Data.AppIdentityUser", b =>
+                {
+                    b.Navigation("Employee")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

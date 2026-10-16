@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using WebApplication1.Models;
 
 namespace WebApplication1.Data
 {
@@ -15,5 +16,7 @@ namespace WebApplication1.Data
 
         [DataType(DataType.Date, ErrorMessage = "Please enter a valid date")]
         public DateTime? DateOfBirth { get; set; }
+
+        public Employee? Employee { get; set; }
     }
 }

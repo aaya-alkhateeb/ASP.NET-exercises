@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApplication1.Data;
 
 namespace WebApplication1.Models
 {
@@ -35,6 +36,11 @@ namespace WebApplication1.Models
         [DefaultValue(true)]
         [Required]
         public bool Is_Active { get; set; }
+
+        public string? UserID { get; set; }
+
+        [ForeignKey(nameof(UserID))]
+        public AppIdentityUser? User { get; set; }
 
 
     }
