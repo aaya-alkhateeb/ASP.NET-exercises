@@ -43,11 +43,18 @@ namespace WebApplication1.Controllers
             ViewBag.empDtype = empDtype;
             ViewBag.searchQuery = searchQuery;
 
+            ViewBag.IsAdmin = IsAdmin();
+
             return View(employees);
         }
 
         public async Task<IActionResult> Create()
         {
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewBag.Departments = await getDepartments();
             ViewBag.Users = await GetUsersWithNoEmployee();
 
@@ -58,6 +65,12 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserID" , "salary" , "DepartmentId")]Employee employee)
         {
+
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(employee);
@@ -74,6 +87,12 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
+
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var employee = await FindEmployee(id);
             if (employee == null)
             {
@@ -92,6 +111,11 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id,Employee employee)
         {
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var dbEmp = await FindEmployee(id);
 
             if (dbEmp == null)
@@ -137,6 +161,12 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
+
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var employee = await FindEmployee(id);
             if (employee == null)
             {
@@ -152,6 +182,12 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Restore(int? id)
         {
+
+            if (!IsAdmin())
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var employee = await FindEmployee(id);
             if (employee == null)
             {
@@ -181,6 +217,16 @@ namespace WebApplication1.Controllers
             var users = new SelectList(_context.Users.Include(u => u.Employee).Where(u=>u.Employee == null), "Id", "FirstName", "LastName");
 
             return users;
+        }
+
+        private bool IsAdmin()
+        {
+            if (User.Identity.IsAuthenticated && User.Identity.Name == "admin@example.com")
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

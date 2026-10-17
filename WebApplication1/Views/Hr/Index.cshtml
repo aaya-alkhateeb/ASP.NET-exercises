@@ -15,11 +15,15 @@
             </span>
         </div>
 
-        <a asp-controller="Hr"
+        @if (ViewBag.IsAdmin)
+        {
+            <a asp-controller="Hr"
            asp-action="Create"
            class="btn btn-dark rounded-pill px-4">
             + Add Employee
         </a>
+        }
+        
     </div>
 
     <div class="card border-0 shadow-sm rounded-3">
@@ -88,7 +92,11 @@
                             <th scope="col">Salary</th>
                             <th scope="col">Hire Date</th>
                             <th scope="col">Department</th>
-                            <th scope="col" class="text-end pe-4">Actions</th>
+                            @if (ViewBag.IsAdmin)
+                            {
+                                <th scope="col" class="text-end pe-4">Actions</th>
+                            }
+                            
                         </tr>
                     </thead>
 
@@ -118,7 +126,9 @@
                                     </span>
                                 </td>
 
-                                <td class="text-end text-nowrap pe-4">
+                                @if (ViewBag.IsAdmin)
+                                {
+                                    <td class="text-end text-nowrap pe-4">
                                     @if (showDeleted)
                                     {
                                         <form asp-controller="Hr"
@@ -161,6 +171,9 @@
                                         </form>
                                     }
                                 </td>
+                                }
+
+                                
                             </tr>
 
                             counter++;
@@ -169,13 +182,18 @@
                 </table>
             </div>
 
-            <div class="p-3 border-top text-end">
+
+            @if (ViewBag.IsAdmin)
+            {
+                <div class="p-3 border-top text-end">
                 <a asp-controller="Hr"
                    asp-action="CreateDepartment"
                    class="btn btn-sm btn-outline-dark rounded-pill px-3">
                     + Add Department
                 </a>
             </div>
+            }
+            
         }
     </div>
 
