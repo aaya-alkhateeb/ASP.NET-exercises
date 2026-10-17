@@ -20,17 +20,20 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Index(string? searchQuery , string empDtype = "active")
         {
-            var query = _context.Employees.Include(e => e.department).AsNoTracking().AsQueryable();
+            var query = _context.Employees.Include(e => e.department).Include(e => e.User).AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
-                query = query.Where(e => e.Employee_Name.Contains(searchQuery) || e.department.Name.Contains(searchQuery));
+                query = query.Where(
+                    e => e.User == null? 
+                    false : 
+                    (e.User.FirstName.Contains(searchQuery) || e.User.LastName.Contains(searchQuery)) || e.department.Name.Contains(searchQuery));
             }
 
-            List<EmployeeView> employees = await query.Where(x => empDtype=="deleted" ? !x.Is_Active : x.Is_Active).OrderBy(x => x.Employee_Name).Select(e => new EmployeeView
+            List<EmployeeView> employees = await query.Where(x => empDtype=="deleted" ? !x.Is_Active : x.Is_Active).OrderBy(x => x.User.FirstName).Select(e => new EmployeeView
             {
                 Employee_Id = e.Employee_Id,
-                Employee_Name = e.Employee_Name,
+                Employee_Name = string.IsNullOrWhiteSpace( e.User.FirstName ?? "" + " " + e.User.LastName ?? "") ? "Name Not Specified" : e.User.FirstName + " " + e.User.LastName,
                 salary = e.salary,
                 DepartmentName = e.department.Name ?? "No Department",
                 HireDate = e.hireDate.ToString("dd - M - yyyy")
@@ -46,13 +49,14 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Departments = await getDepartments();
+            ViewBag.Users = await GetUsersWithNoEmployee();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Employee_Name" , "salary" , "DepartmentId")]Employee employee)
+        public async Task<IActionResult> Create([Bind("UserID" , "salary" , "DepartmentId")]Employee employee)
         {
             if (!ModelState.IsValid)
             {
@@ -60,6 +64,7 @@ namespace WebApplication1.Controllers
             }
 
             employee.hireDate = DateTime.Now;
+            employee.Is_Active = true;
             await _context.Employees.AddAsync(employee);
             await _context.SaveChangesAsync();
 
@@ -74,10 +79,9 @@ namespace WebApplication1.Controllers
             {
                 return RedirectToAction("Index");
             }
-            if (employee.DepartmentId == null)
-            {
-                ViewBag.Departments = await getDepartments();
-            }
+       
+            ViewBag.Departments = await getDepartments();
+            
 
 
             ViewBag.hasHireDate = !(employee.hireDate.Equals(DefaultDate));
@@ -86,7 +90,7 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, Employee employee)
+        public async Task<IActionResult> Edit(int? id,Employee employee)
         {
             var dbEmp = await FindEmployee(id);
 
@@ -97,12 +101,12 @@ namespace WebApplication1.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Departments = await getDepartments();
+                ViewBag.hasHireDate = !(employee.hireDate.Equals(DefaultDate));
                 return View(employee);
             }
 
-            dbEmp.Employee_Name = employee.Employee_Name;
             dbEmp.salary = employee.salary;
-            dbEmp.DepartmentId = employee.DepartmentId == null ? dbEmp.DepartmentId : employee.DepartmentId;
+            dbEmp.DepartmentId = employee.DepartmentId;
             dbEmp.hireDate = employee.hireDate.Equals(DefaultDate) ? dbEmp.hireDate : employee.hireDate;
             _context.Entry(dbEmp).State = EntityState.Modified;         
             await _context.SaveChangesAsync();
@@ -170,6 +174,13 @@ namespace WebApplication1.Controllers
         {
             if (id == null) return null;
             return await _context.Employees.FindAsync(id);
+        }
+
+        private async Task<SelectList> GetUsersWithNoEmployee()
+        {
+            var users = new SelectList(_context.Users.Include(u => u.Employee).Where(u=>u.Employee == null), "Id", "FirstName", "LastName");
+
+            return users;
         }
     }
 }

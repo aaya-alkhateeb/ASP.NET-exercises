@@ -13,10 +13,7 @@ namespace WebApplication1.Models
         [Key]
         public int Employee_Id { get; set; }
 
-        [Required(ErrorMessage ="Employee's name is required")]
-        [StringLength(35, MinimumLength = 3, ErrorMessage = "Employee's name must be between 3 and 35 characters")]
-        [DisplayName("Name")]
-        public string Employee_Name { get; set; }
+
 
         [Range(290,10000, ErrorMessage = "Salary must be between 290 and 10000")]
         [Required]

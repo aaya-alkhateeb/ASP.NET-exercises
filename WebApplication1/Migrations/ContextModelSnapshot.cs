@@ -262,16 +262,10 @@ namespace WebApplication1.Migrations
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Employee_Name")
-                        .IsRequired()
-                        .HasMaxLength(35)
-                        .HasColumnType("nvarchar(35)");
-
                     b.Property<bool>("Is_Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("hireDate")
@@ -286,7 +280,8 @@ namespace WebApplication1.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("UserID")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserID] IS NOT NULL");
 
                     b.ToTable("Employees");
                 });
@@ -350,9 +345,7 @@ namespace WebApplication1.Migrations
 
                     b.HasOne("WebApplication1.Data.AppIdentityUser", "User")
                         .WithOne("Employee")
-                        .HasForeignKey("WebApplication1.Models.Employee", "UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WebApplication1.Models.Employee", "UserID");
 
                     b.Navigation("User");
 
@@ -361,8 +354,7 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Data.AppIdentityUser", b =>
                 {
-                    b.Navigation("Employee")
-                        .IsRequired();
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }
