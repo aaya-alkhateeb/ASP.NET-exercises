@@ -34,7 +34,7 @@ namespace WebApplication1.Controllers
             {
                 Employee_Id = e.Employee_Id,
                 Employee_Name = string.IsNullOrWhiteSpace( e.User.FirstName ?? "" + " " + e.User.LastName ?? "") ? "Name Not Specified" : e.User.FirstName + " " + e.User.LastName,
-                salary = e.salary,
+                salary = e.salary== null? "Not Specified" : e.salary.Value.ToString("C"),
                 DepartmentName = e.department.Name ?? "No Department",
                 HireDate = e.hireDate.ToString("dd - M - yyyy")
             }).ToListAsync();
@@ -122,10 +122,15 @@ namespace WebApplication1.Controllers
             {
                 return RedirectToAction("Index");
             }
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || employee.salary == null)
             {
+                if(employee.salary == null)
+                {
+                    ModelState.AddModelError("salary", "Salary is required");
+                }
+
                 ViewBag.Departments = await getDepartments();
-                ViewBag.hasHireDate = !(employee.hireDate.Equals(DefaultDate));
+                ViewBag.hasHireDate = !(dbEmp.hireDate.Equals(DefaultDate));
                 return View(employee);
             }
 

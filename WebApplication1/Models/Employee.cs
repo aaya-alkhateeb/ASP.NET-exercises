@@ -16,19 +16,18 @@ namespace WebApplication1.Models
 
 
         [Range(290,10000, ErrorMessage = "Salary must be between 290 and 10000")]
-        [Required]
         [Precision(7,2)]
         [DisplayName("Salary")]
-        public double salary { get; set; }
+        public double? salary { get; set; }
 
 
         public DateTime hireDate { get; set; }
 
-        public int ?DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         [ForeignKey("DepartmentId")]
         [ValidateNever]
-        public Department department { get; set; }
+        public Department? department { get; set; }
 
         [DefaultValue(true)]
         [Required]

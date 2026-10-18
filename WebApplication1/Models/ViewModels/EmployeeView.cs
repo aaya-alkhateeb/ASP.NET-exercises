@@ -6,7 +6,7 @@
 
         public string Employee_Name { get; set; }
 
-        public double salary { get; set; }
+        public string salary { get; set; } = "Not Specified";
 
         public string DepartmentName { get; set; } = "No Department";
 

@@ -271,7 +271,7 @@ namespace WebApplication1.Migrations
                     b.Property<DateTime>("hireDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("salary")
+                    b.Property<double?>("salary")
                         .HasPrecision(7, 2)
                         .HasColumnType("float(7)");
 

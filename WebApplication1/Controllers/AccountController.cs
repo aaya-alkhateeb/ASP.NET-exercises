@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models.ViewModels;
 using WebApplication1.Data;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
@@ -9,10 +10,13 @@ namespace WebApplication1.Controllers
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly SignInManager<AppIdentityUser> _signInManager;
-        public AccountController(UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager)
+
+        private readonly Context _context;
+        public AccountController(UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager, Context context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -49,6 +53,15 @@ namespace WebApplication1.Controllers
                 }
                 return View(model);
             }
+
+            var employee = new Employee
+            {
+                UserID = user.Id,
+                hireDate = DateTime.Now,
+                Is_Active = true
+            };
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
 
             await _signInManager.SignInAsync(user, isPersistent: true);
             
